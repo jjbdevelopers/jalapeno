@@ -1,9 +1,7 @@
-//var servicio = "http://rs-pvapp.rhcloud.com/webresources/";
-// var servicio = "http://127.0.0.1:8084/webresources/";
-// var servicio = "http://localhost:8081/webresources/";
-//var servicio = "http://190.14.226.155:8095/rs/webresources/";
-//var servicio = "http://rsapp-rsapp.a3c1.starter-us-west-1.openshiftapps.com/webresources/";
-var servicio = "http://localizarsjws-app-localizars.7e14.starter-us-west-2.openshiftapps.com/webresources/";
+
+//var servicio = "http://localhost:8081/rs/api/";
+var servicio = "http://service-jjb-rs.1d35.starter-us-east-1.openshiftapps.com/rs-1.0/api/";
+
 
 var usuario = {
     codTipoDocumento: 0, documentoIdentidad: null, nombre: null, apellido: null, usuario: null, correo: null, edad: 0, fechaNacimiento: null, codigo: null,
@@ -46,11 +44,6 @@ var LocalizacionesDispositivo = {
     localizacionesDispositivoPK: LocalizacionesDispositivoPK, fecha: null, latitude: 0, longitud: 0
 };
 
-
-//var servicio = "http://10.1.1.185:8095/paprs/webresources/";
-//var servicio = "http://localhost:9090/webresources/";
-//var servicio = "http://localhost:8080/webresources/";
-//var servicio = "http://localhost:8084/rs/webresources/";
 
 var c = c || {};
 c.Settings = c.Settings || {};
