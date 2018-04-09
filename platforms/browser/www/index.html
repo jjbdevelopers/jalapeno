@@ -1,0 +1,460 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>oasys</title>
+        <!--        <meta HTTP-EQUIV="Content-Type" content="text/html; charset=iso-8859-1" /> -->
+        <script type="text/javascript" src="cordova.js"></script>
+        <link rel="stylesheet" href="JQ/jquery.mobile-1.4.5.min.css" />
+        <link href="css/themes/3/conf-room1.min.css" rel="stylesheet" />
+        <link href="css/themes/3/jquery.mobile.icons.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <script src="JQ/jquery.min.js"></script>
+        <script src="JQ/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/markerwithlabel.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=geometry"></script>        
+        <script src="./js/util.js"></script>
+        <script src="./js/pap.js"></script>
+        <script src="./js/app.js"></script>
+
+        <script src="JQ/fastclick.min.js"></script>
+
+        <script src="js/signin-controller.js" type="text/javascript"></script>
+        <script src="js/signout-controller.js" type="text/javascript"></script>
+        <script src="js/usuario-controller.js" type="text/javascript"></script>
+        <script src="js/registro-usuario-controller.js" type="text/javascript"></script>
+        <script src="js/agenda-usuario-controller.js" type="text/javascript"></script>
+        <script src="js/agenda-controller.js" type="text/javascript"></script>
+        <script src="js/nota-controller.js" type="text/javascript"></script>
+        <script src="js/pap-controller.js" type="text/javascript"></script>
+        <script src="js/settings.js" type="text/javascript"></script>
+        <script src="js/session.js"></script>
+        <script src="js/api-messages.js"></script>
+        <script src="js/index.js" type="text/javascript"></script>
+        <!--        <script src="js/signup-controller.js"></script>-->
+        <script src="js/mapa.js"></script>
+
+        <script>
+//            function iniciarConfirmacion()
+//            {
+//                cargarMapa();
+//                cargarAutorizacionesUsuario();
+//            }
+
+//            function recoge()
+//            {
+//                document.getElementById('members-ctrlgroup').form;
+//
+//                $('#members-ctrlgroup').find('INPUT').each(function () {
+//                    var value = $(this).filter(':checked').val();
+//                    if (value != null) {
+//                        console.log(value);
+//                    }
+//                });
+//
+//            }
+        </script>
+
+        <style>
+            #map-canvas{
+                height:70%;
+                width:100%;
+                padding:0;
+                position:absolute !important;
+                top:40px;
+                righ:0px;
+                bottom:0px !important;
+                left:0px !important;
+            }
+            .labels {
+                color: red;
+                background-color: white;
+                font-family: "Lucida Grande", "Arial", sans-serif;
+                font-size: 10px;
+                font-weight: bold;
+                text-align: center;
+                width: 40px;     
+                border: 2px solid black;
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div data-role="page" id="page-signin" >
+            <div role="main" class="ui-content">
+                <img src="images/oasys.png" alt="PAP" style="width: 100%">
+                <div id="ctn-err" class="bi-invisible"></div>
+                <input type="text" name="txt-documento" id="txt-documento" value=""
+                       placeholder="Usuario">
+                <input type="password" name="txt-password" id="txt-password" value=""
+                       placeholder="Clave">
+                <p class="bi-top-margin-1-5"><a href="#page-remember">¿Olvidó su Clave?</a></p>
+                <input type="hidden" name="txt-regId" id="txt-regId" value="">
+                <!--                <fieldset data-role="controlgroup">                
+                                                        <label>
+                                                            <input type="checkbox" name="chk-keep-signed-in" id="chk-keep-signed-in" checked="checked"> Recuerdame
+                                    
+                                                        </label>
+                                </fieldset>-->
+
+                <br/>
+                <select name="chk-keep-signed-in" id="chk-keep-signed-in" data-role="flipswitch" data-theme="b">
+                    <option value="false">NO</option>
+                    <option value="true">SI</option>
+                </select>
+                <label for="chk-keep-signed-in">Recuerdame</label>
+
+                <a href="#dlg-invalid-credentials" data-rel="popup" data-transition="pop" data-position-to="window" id="btn-submit" 
+                   class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5">Ingresar</a>
+
+            </div>
+        </div>
+        <div data-role="page" id="page-index">
+            <div role="main" class="ui-content">
+                <img src="images/oasys.png" alt="PAP" style="width: 100%">
+                <p class="bi-top-margin-1-5"><b>Usuario Existente</b></p>
+                <a href="#page-signin" class="ui-btn ui-btn-b ui-corner-all">Inicia Sesión</a>
+                <p class="bi-top-margin-1-5"><b>Aún no tienes cuenta?</b></p>
+                <a href="#divRegistrarUsuario" class="ui-btn ui-btn-b ui-corner-all">Registrate</a>
+                <p></p>
+            </div><!-- /content -->
+        </div><!-- /page -->
+
+        <div data-role="page" id="menu">
+            <div id="banner" class="section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <h1 class="small"><span class="bold">Oasys</span></h1>
+                            <p class="big">Solución Tecnológica</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer" data-theme="b" data-id="menu-opciones" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li><a href="#menu" data-icon="home" class="ui-state-persist">Inicio</a></li>
+                        <li><a href="#agenda" data-icon="grid">Tu Agenda</a></li>
+                        <li><a href="#nota" data-icon="plus">Notas</a></li>
+                        <li><a id="menu-salir" data-icon="arrow-l" >Salir</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="agenda" data-role="page">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Agenda</h1>
+            </div>
+            <div role="main" class="ui-content" >
+                <div class="ui-body ui-body-a ui-corner-all" >
+                    <p>Fecha Agenda
+                        <input type="date" id="fecha-agenda">
+                    </p>
+                    <a id="btn-cargar-agenda" class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5" >Cargar Agenda</a>
+                </div>
+                <form style="margin:0px">
+                    <div id="div-agenda-usuario"></div>
+                </form>
+            </div>
+
+            <div data-role="footer" data-theme="b" data-id="menu-opciones" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li><a href="#menu" data-icon="home" >Inicio</a></li>
+                        <li><a href="#agenda" data-icon="grid" class="ui-state-persist">Tu Agenda</a></li>
+                        <li><a href="#nota" data-icon="plus" >Notas</a></li>
+                        <li><a id="agenda-salir" data-icon="arrow-l" >Salir</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div  id="nota" data-role="page">
+            <div data-role="header" data-position="fixed" data-theme="d">
+                <h1>Notas</h1>
+            </div>
+            <div id="nota-banner" class="section-padding">
+                <div class="container">
+                    <div class="row">
+                        <div class="jumbotron">
+                            <h1 class="small"><span class="bold">Oasys</span></h1>
+                            <p class="big">Solución Tecnológica</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer" data-theme="b" data-id="menu-opciones" data-position="fixed">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li><a href="#menu" data-icon="home" >Inicio</a></li>
+                        <li><a href="#agenda" data-icon="grid">Tu Agenda</a></li>
+                        <li><a href="#nota" data-icon="plus" class="ui-state-persist">Notas</a></li>
+                        <li><a id="nota-salir" data-icon="arrow-l" >Salir</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!--        <div id="menu-confirmar" data-role="page" data-url="map-page" style="background-color: #363636" >
+                    <div data-role="header" data-position="fixed" style="background-color: #0CB4FD" >
+                        <a href="#pap" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" ></a>
+                        <h1>Confirmar</h1>
+                    </div>
+                    <br/><br/><br/>
+                    <br/><br/><br/>
+                    <div class="ui-grid-a" style="top: 75%;">
+                        <div class="ui-block-a" onclick="location.href = '#confirmar'">
+                            <div class="ui-bar" style="font-size:1.2em;text-align: center;height:150px;text-shadow: 2px 2px #006699; background-color: #0CB4FD;color:white;font-weight:none;padding-top: 20px">
+                                <img src="images/icono_confirmar.png" alt="PAP" style="width: 60%"><br>Reclamar Farmacia
+                            </div>
+                        </div>
+                        <div id="div-iniciar-domicilio" class="ui-block-b" onclick="location.href = '#domicilio'">                                            
+                            <div class="ui-bar" style="font-size:1.2em;text-align: center;height:150px;text-shadow: 2px 2px #006699;background-color: #0DE0FE;color:white;font-weight:none;padding-top: 20px">
+                                <img src="images/icono_ordenes.png" alt="PAP" style="width: 60%"><br>Pedir Domicilio
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+        <!--        <div id="confirmar" data-role="page" data-url="map-page" style="background-color: #363636" >
+                    <div data-role="header" data-position="fixed" style="background-color: #0CB4FD" >
+                        <a href="#pap" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" ></a>
+                        <h1>Confirmar</h1>
+                    </div>
+                    <div role="main" class="ui-content" >
+                        <div id="map-canvas"></div>
+                        <div style="position: absolute;top: 75%;width:90%;">
+                            <br>
+                            <div style="display:inline-block"><h3>Ciudad:&nbsp;&nbsp;</h3></div>
+                            <div id="ciudad" style="display:inline-block"></div>
+                            <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini">Cambiar</a> 
+                            <div class="ui-body ui-body-a ui-corner-all" style="border:none; background-color: rgba(51, 136, 204, 0.49)">
+                                <form style="margin:0px">
+                                                                <fieldset data-role="controlgroup">
+                                                                    <input type="checkbox" name="autorizacion-1" id="autorizacion-1" >
+                                                                    <label for="autorizacion-1">Autorización 6410</label>
+                                                                    <ul>
+                                                                        <li>LOSARTAN POTASICO TABLETA O TABLETA RECUBIERTA  50 MG</li>
+                                                                        <li>CIPROFIBRATO TABLETA  100 MG</li>
+                                                                    </ul>
+                                                                    <input type="checkbox" name="autorizacion-2" id="autorizacion-2" checked="checked">
+                                                                    <label for="autorizacion-2">Autorización 6437</label>
+                                                                    <ul>
+                                                                        <li>CANDESARTAN CILEXETILO TABLETA  8 MG<>
+                                                                    </ul>
+                                                                </fieldset>
+        
+                                    <div id="div-autorizaciones-usuario"></div>
+        
+                                    <h3>Centro de Atención:&nbsp;&nbsp;</h3>
+                                    <select id="cafs" name="cafs"></select><div style="text-align:center"> Cra 24 No 9-23 </div>
+        
+                                </form>
+                            </div>
+                            <br>
+                            <div class="ui-body ui-body-a ui-corner-all" style="border:none">
+                                <form style="margin:0px">
+                                    <fieldset data-role="controlgroup">
+                                        <input type="checkbox" name="autorizacion-ac-1" id="autorizacion-ac-1" checked="checked">
+                                        <label for="autorizacion-ac-1">Autorización 159</label>
+                                        ZEMPLAR PARICALCITOL SOLUCION INYECTABLE  5 MCG/ML/1 ML X5
+                                    </fieldset>
+                                    <h3>Centro de Atención:&nbsp;&nbsp;</h3>
+                                    <select id="cafsac" name="cafsac"></select><div style="text-align:center"> Av. 30 de agosto No. 26-34</div>
+                                </form>
+                            </div>    
+        
+        
+        
+                            <h3>Autorización </h3>
+                            <select id="autorizaciones" name="select-choice-2" ></select>
+        
+        
+        
+                                                <button class="ui-btn ui-btn-b ui-corner-all" style="background-color: #660099;color: white;border: none"
+                                                        onclick="recoge()">
+                                                    Confirmar y Recoger
+                                                </button>
+        
+                            <a data-rel="popup" data-transition="pop" data-position-to="window" id="btn-confirmar"
+                               style="background-color: #0D94E6;"
+                               class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5">Confirmar y Recoger</a>
+        
+                        </div>
+                    </div>
+                </div>-->
+
+        <!--        <div id="domicilio" data-role="page" data-url="map-page" style="background-color: #363636" >
+                    <div data-role="header" data-position="fixed" style="background-color: #0CB4FD" >
+                        <a href="#pap" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" ></a>
+                        <h1>Domicilio</h1>
+                    </div>
+                    <div role="main" class="ui-content" >
+                        <div style="position: absolute;top: 10%;width:90%;">
+                            <br>
+                            <a href="#" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini">Cambiar</a> 
+                            <div class="ui-body ui-body-a ui-corner-all" style="border:none; background-color: rgba(51, 136, 204, 0.49)">
+                                <form style="margin:0px">
+                                    <div id="div-autorizaciones-domicilio-usuario"></div>
+                                </form>
+                            </div>
+                            <br>
+                            <p>Ubicaciones Sugeridas:
+                                <select id="direccionesUsuario">
+                                    <option value="-1">Seleccione</option>
+                                </select>
+                            </p>
+        
+                            <p>Departamento Envio:
+                                <select id="departamentoEnvio">
+                                    <option value="-1">Seleccione</option>
+                                </select>
+                            </p>
+        
+                            <p>Ciudad Envio:
+                                <select id="municipioEnvio" >
+                                    <option value="-1">Seleccione</option>
+                                </select>
+                            </p>
+        
+                            <p>Dirección Envio: <input id="direccionEnvio"/></p>
+                            <p>Telefono Contacto: <input id="telefonoEnvio"/></p>
+        
+                            <div id="domicilio-err" class="bi-invisible"></div>
+                            <a data-rel="popup" data-transition="pop" data-position-to="window" id="btn-domicilio-confirmar"
+                               style="background-color: #0D94E6;"
+                               class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5">Generar Pedido</a>
+        
+                        </div>
+                    </div>
+                </div>-->
+
+        <!--        <div id="mis_ordenes" data-role="page" data-url="map-page"  >
+                    <div data-role="header" data-position="fixed" data-theme="d">
+                        <a href="#menu" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" ></a>                
+                        <h1>Ordenes</h1>
+                    </div>
+                    <div role="main" class="ui-content">
+        
+                        <div class="ui-body ui-body-a ui-corner-all" style="border:none;background-color: rgba(51, 136, 204, 0.49)" >
+                            <form style="margin:0px">
+        
+                                <div id="div-alistamientos-usuario"></div>
+                            </form>
+                        </div>
+                        <br>
+                        <a href="#pap" 
+                           class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5" >Volver</a>
+        
+        
+                        <div data-role="popup" id="alistamiento-popup" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;background-color: #1A5F87">
+                                <div data-role="header" data-theme="d">
+                                    <h1>Alistamiento</h1>
+                                    </div>
+                                <div role="main" class="ui-content">
+                                <div id="alistamiento-detalle" ></div>
+                                        <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cerrar</a>
+                                    </div>
+                        </div>
+        
+                    </div>
+        
+                    <div data-role="footer" data-theme="b" data-id="menu-opciones" data-position="fixed">
+                        <div data-role="navbar" data-iconpos="top">
+                            <ul>
+                                <li><a href="#menu" data-icon="home" >Inicio</a></li>
+                                <li><a href="#agenda" data-icon="grid" >Tu Agenda</a></li>
+                                <li><a href="#mis_ordenes" data-icon="plus" class="ui-state-persist">Notas</a></li>
+                                <li><a href="#" data-icon="arrow-l" >Salir</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>-->
+
+
+
+        <!--        <div id="divRegistrarUsuario" data-role="page" style="background-color: #363636" >
+                    <div data-role="header" data-position="fixed">
+                        <a href="#" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" data-rel="back">Back Icon</a>
+                        <h1>Registro Usuario</h1>
+                    </div>
+                    <div role="main" class="ui-content">
+                        <p>Tipo de Documento:
+                            <select id="tipoDocumentoUsuario">
+                                <option value="1">CEDULA DE CIUDADANIA</option>
+                                <option value="2">TARJETA DE IDENTIDAD</option>                        
+                                <option value="4">CEDULA DE EXTRANJERIA</option>
+                            </select>
+                        </p>
+                        <p>Documento:<input id="documentoUsuario" type="number"/></p>
+                        <p>Nombre(s): <input id="nombreUsuario"/></p>
+                        <p>Apellido(s): <input id="apellidoUsuario"/></p>
+        
+                        <p>EPS:
+                            <select id="epsUsuario" data-native-menu="false">
+                            <select id="epsUsuario">
+                                <option value="-1">Seleccione</option>
+                            </select>
+                        </p>
+        
+                        <p>Fecha de Nacimiento:
+                            <input type="date" id="fechaNacimientoUsuario">
+                        </p>
+        
+                        <p>Sexo:</p>
+                        <div id="radio">
+                            <input type="radio" id="radio1" name="radio" checked="checked" value="F" /><label for="radio1">Femenino</label>
+                            <input type="radio" id="radio2" name="radio" value="M"/><label for="radio2">Masculino</label>
+                        </div>
+        
+                        <p>Departamento Residencia:
+                            <select id="departamentoUsuario" onchange="cargarMunicipios(this.value)">
+                                <option value="-1">Seleccione</option>
+                            </select>
+                        </p>
+        
+                        <p>Ciudad Residencia:
+                            <select id="municipioUsuario" >
+                                <option value="-1">Seleccione</option>
+                            </select>
+                        </p>
+        
+                        <p>Dirección: <input id="direccionUsuario"/></p>
+                        <p>Correo Electrónico: <input id="correoUsuario"/></p>
+                        <p>Número Teléfono Fijo: <input id="telefonoUsuario" type="number"/></p>
+                        <p>Número Teléfono Celular: <input id="celularUsuario" type="number"/></p>
+                        <p>Contraseña: <input id="claveUsuario" type="password"/></p>
+                        <p>Repita la Contraseña: <input id="claveConfirmacionUsuario" type="password"/></p>
+        
+                        <textarea rows="15" cols="50" id="textareaAcuerdo"
+                                  readonly style="resize: none;">
+                        </textarea>
+        
+                        <input type="checkbox" id="acuerdoUsuario" value="AceptaAcuerdo"
+                               onchange="document.getElementById('bnRegistrarUsuario').focus()"/>
+                        <label for="acuerdoUsuario">He leído y acepto.</label>
+        
+                        <button id="bnRegistrarUsuario" class="btn btn-block" onclick="registrarUsuario()">
+                            Crear Usuario
+                        </button>
+                    </div>
+                </div>-->
+        <div data-role="page" id="page-remember" style="background-color: #363636">
+            <div role="main" class="ui-content">
+                <a href="#" class="ui-btn ui-corner-all ui-icon-carat-l ui-btn-icon-notext" data-rel="back">Back Icon</a>
+                <img src="images/oasys.png" alt="PAP" style="width: 100%">
+                <h3>Recordar Contraseña</h3>
+                <div id="ctn-err" class="bi-invisible"></div>
+                <label for="txt-documento-recordar">Documento:</label>
+                <input type="number" name="txt-documento-recordar" id="txt-documento-recordar" value="">                                
+                <a href="#dlg-invalid-credentials" data-rel="popup" data-transition="pop" data-position-to="window" id="btn-submit" 
+                   class="ui-btn ui-btn-b ui-corner-all bi-top-margin-1-5">Enviar</a>                
+            </div>
+        </div>
+    </body>
+</html>

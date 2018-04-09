@@ -1,0 +1,14 @@
+var c = c || {};
+c.ApiMessages = c.ApiMessages || {};
+c.ApiMessages.EMAIL_NOT_FOUND = 1;
+c.ApiMessages.INVALID_PWD = 2;
+c.ApiMessages.DB_ERROR = 3;
+c.ApiMessages.NOT_FOUND = 4;
+c.ApiMessages.EMAIL_ALREADY_EXISTS = 5;
+c.ApiMessages.COULD_NOT_CREATE_USER = 6;
+c.ApiMessages.PASSWORD_RESET_EXPIRED = 7;
+c.ApiMessages.PASSWORD_RESET_HASH_MISMATCH = 8;
+c.ApiMessages.PASSWORD_RESET_EMAIL_MISMATCH = 9;
+c.ApiMessages.COULD_NOT_RESET_PASSWORD = 10;
+c.ApiMessages.PASSWORD_CONFIRM_MISMATCH = 11;
+c.ApiMessages.SESSION_NOT_FOUND = 12;
